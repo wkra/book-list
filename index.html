@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html lang="pl">
+<head>
+	<meta charset="utf-8" />
+<title>Books</title>
+<!-- my style css -->
+<link href="css/style.css" rel="stylesheet" />
+<!-- Latest compiled and minified CSS -->
+<link href="css/bootstrap.css" rel="stylesheet" />
+</head>
+
+<body ng-app="mainApp">
+<div class="container" ng-controller="booksApp" ng-init="displayData(); blockBook()">
+<div >
+<br>
+	
+	<div class="row">
+
+		<div class="col-lg center-block">
+		
+	<div class="panel panel-primary">
+		<div class="panel-heading">	<h3>Książki</h3>
+		</div>
+		<div class="panel-body">
+			<div class="input-group col-lg-6">
+				<span class="input-group-addon">Szukaj: </span>
+				<input ng-model="searchbook" type="text" class="form-control" placeholder="Szukaj..." >
+				
+			</div>
+		</div>
+			<div class="table-responsive">
+				<table class="table table-hover table-striped books">
+					<thead>
+						<tr>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('id')">ID</button>
+							<span class="sortorder" ng-show="propertyName === 'id'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('first_name')">Imię</button>
+							<span class="sortorder" ng-show="propertyName === 'first_name'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('last_name')">Nazwisko</button>
+							<span class="sortorder" ng-show="propertyName === 'last_name'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('title')">Tytuł</button>
+							<span class="sortorder" ng-show="propertyName === 'title'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('publisher')">Wydawnictwo</button>
+							<span class="sortorder" ng-show="propertyName === 'publisher'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('edition')">Wydanie</button>
+							<span class="sortorder" ng-show="propertyName === 'edition'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+							<th>
+							<button class="btn btn-default" ng-click="sortBy('year')">Rok</button>
+							<span class="sortorder" ng-show="propertyName === 'year'" ng-class="{reverse: reverse}"></span></th>
+							</th>
+						</tr>
+						<tr>
+
+					</thead>
+					<tbody>
+						<tr ng-repeat="book in books | filter: searchbook | orderBy: propertyName:reverse">
+							<td data-ng-model="book.id" class="col-xs-1" ng-bind="book.id"></td>
+							<td data-ng-show="!showForms" ng-bind="book.first_name"></td>
+							<td data-ng-show="!showForms" ng-bind="book.last_name"></td>
+							<td data-ng-show="!showForms" ng-bind="book.title"></td>
+							<td data-ng-show="!showForms" ng-bind="book.publisher"></td>
+							<td data-ng-show="!showForms" ng-bind="book.edition"></td>
+							<td data-ng-show="!showForms" ng-bind="book.year"></td>
+							<form ng-model="editForm">
+							<td class="hide">
+								<input class="form-control" data-ng-model="book.id" name="id" required/> </td>
+							<td data-ng-show="showForms">
+								<input class="form-control" data-ng-model="book.first_name" name="first_name" maxlength="30" ng-maxlength="30" required/> </td>
+							<td data-ng-show="showForms">	
+								<input class="form-control" data-ng-model="book.last_name" name="last_name" maxlength="30" ng-maxlength="30" required/></td>
+							<td data-ng-show="showForms">
+								<input class="form-control" data-ng-model="book.title" name="title"maxlength="100" ng-maxlength="100" required/> </td>
+							<td data-ng-show="showForms">	
+								<input class="form-control" data-ng-model="book.publisher" name="publisher" maxlength="30" ng-maxlength="30" required/></td>
+							<td data-ng-show="showForms">	
+								<input class="form-control" data-ng-model="book.edition" name="edition" maxlength="10" ng-maxlength="10" required/></td>
+							<td data-ng-show="showForms">	
+								<input class="form-control" maxlength="4" ng-maxlength="4" data-ng-model="book.year" name="year"required/></td>
+							<td data-ng-show="showOk">	<a href="" data-ng-click="editbook(book.id, book.first_name, book.last_name, book.title, book.publisher, book.edition, book.year); toogleAllShow()" class="glyphicon glyphicon-ok" style="color:#5cb85c"; ng-disabled="editForm.$invalid"></a></td>
+							<td data-ng-show="showCancel">	<a href="" data-ng-click="toogleAllShow()" class="glyphicon glyphicon-remove" style="color:#d9534f"></a></td>
+							
+							<td data-ng-show="!showPencil"><a href=""  data-ng-click="validationBlockBook(book.id,'edit');"  class="glyphicon glyphicon-pencil" style="color:#5bc0de"></a></td>
+							<td data-ng-show="!showRemove"><a href=""  data-ng-click="validationBlockBook(book.id,'remove');"  class="glyphicon glyphicon-remove" style="color:#d9534f"></a></td>
+							</form
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+				
+		</div>	
+		</div>
+	</div>
+</div>
+<br />
+<div class="panel panel-primary">
+<div class="panel-heading panel-primary">
+	<h4>Dodaj nową książkę:</h4>
+</div>
+<div class="panel-body panel-primary">
+<form name="addBookForm" ng-submit="submitForm()" >
+<div class="row">
+	<div class="col-lg-4 col-sm-6" >
+	<input ng-model="addbook.addimie" type="text" class="form-control" name="addimie" placeholder="Imię" maxlength="30" ng-maxlength="30"required />
+
+	</div>
+	
+	<div class="col-lg-4 col-sm-6" >
+	<input ng-model="addbook.addnazwisko"type="text" class="form-control"name="addnazwisko" placeholder="Nazwisko" maxlength="30" ng-maxlength="30" required  /></div>
+	
+	<div class="col-lg-4 col-sm-6" >
+	<input ng-model="addbook.addtytul"type="text" class="form-control" name="addtytul" placeholder="Tytuł" maxlength="100" ng-maxlength="100" required  />
+
+	</div>
+	
+	<div class="col-lg-4 col-sm-6">
+	<input ng-model="addbook.addwydawnictwo"type="text" class="form-control" name="addwydawnictwo" placeholder="Wydawnictwo" required maxlength="30" ng-maxlength="30" required /></div>
+	
+	<div class="col-lg-4 col-sm-6">
+	<input ng-model="addbook.addwydanie"type="text" class="form-control" name="addwydanie" placeholder="Wydanie" maxlength="10" ng-maxlength="10" required /></div>
+	
+	<div class="col-lg-4 col-sm-6">
+	<input ng-model="addbook.addrok" type="text" class="form-control" name="addrok" placeholder="Rok" maxlength="4" ng-maxlength="4" required /></div>
+</div>
+</br>
+<div class="row">
+<div class="col-sm-5 col-md-4 col-lg-3">
+	<label>
+	<input type="checkbox" ng-model="checkAddbook" required/> Tak, chcę dodać książkę.
+	</label>
+	
+</div>
+</div>
+<div class="row">
+<div class="col-sm-2 ">
+	<input ng-click="insertdata()" ng-disabled="addBookForm.$invalid" type="submit" class="input-group btn btn-primary" value="Dodaj">
+</div>
+
+</div>
+
+</div>
+
+</form>
+</div>	
+
+
+
+
+</div>
+<!-- angular -->
+<script src="script/angular.min.js"></script>
+
+<!-- jquery -->
+<script src="script/jquery-3.2.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script src="script/bootstrap.min.js"></script>
+
+<!-- my scripts -->
+<script type="text/javascript" charset="UTF-8" src="script/books.js"></script>
+</body>
+</html>
